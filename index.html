@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Анимированное изображение</title>
+<style>
+    body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #fae675; /* Цвет фона */
+    }
+    #img-container {
+        position: relative;
+        width: 256px;
+        height: 256px;
+        margin-bottom: 20px; /* Добавлен отступ снизу */
+    }
+    #img-container img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.3s ease, filter 0.3s ease; /* Анимация при наведении */
+    }
+    #img-container img:hover {
+        filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.9)); /* Усиленная подсветка по контуру при наведении */
+    }
+    #img-container img:active {
+        transform: scale(0.9); /* Масштабирование изображения при нажатии */
+        filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.9)); /* Усиленная подсветка по контуру при нажатии */
+    }
+    #counter {
+        position: absolute;
+        top: -30px; /* Поднимаем счетчик над изображением */
+        left: 50%; /* Центрируем */
+        transform: translateX(-50%); /* Смещаем влево на 50% */
+        font-size: 30px; /* Увеличиваем размер шрифта */
+        color: #ffffff; /* Белый цвет цифр */
+    }
+    .click-feedback {
+        position: absolute;
+        font-size: 20px;
+        color: black; /* Цвет надписи */
+        animation: fadeMove 1s forwards; /* Анимация плавного исчезновения и подъема */
+    }
+    @keyframes fadeMove {
+        0% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        100% {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+    }
+    .buttons-container {
+        display: flex;
+        justify-content: space-between;
+        width: 256px;
+        position: absolute;
+        bottom: 20px; /* Располагаем кнопки внизу страницы */
+    }
+    .button {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100px;
+        padding: 10px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        font-size: 12px;
+        color: #333;
+        text-decoration: none;
+        transition: transform 0.3s ease, background-color 0.3s ease; /* Добавлена анимация при нажатии */
+    }
+    .button img {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+    }
+    .button:active {
+        transform: scale(0.9); /* Масштабирование кнопки при нажатии */
+        background-color: #f5ef42; /* Изменение фона кнопки на белый при нажатии */
+    }
+</style>
+</head>
+<body>
+
+<div id="img-container">
+    <div id="counter">0</div> <!-- Счетчик над изображением -->
+    <img id="clickable-img" src="egg.png" alt="Ваше изображение" width="256" height="256">
+</div>
+
+<div class="buttons-container">
+    <a href="#" class="button">
+        <img src="friends.png" alt="Friends">
+        Друзья
+    </a>
+    <a href="#" class="button">
+        <img src="airdrop.png" alt="Airdrop">
+        Airdrop
+    </a>
+</div>
+
+<script>
+    var clickCount = localStorage.getItem('clickCount') || 0;
+    var clickableImg = document.getElementById('clickable-img');
+    var counter = document.getElementById('counter');
+
+    updateCounter();
+
+    clickableImg.addEventListener('click', function(event) {
+        clickCount++;
+        updateCounter();
+        localStorage.setItem('clickCount', clickCount);
+
+        // Создаем элемент для надписи "+1"
+        var feedback = document.createElement('div');
+        feedback.textContent = '+1';
+        feedback.className = 'click-feedback';
+        feedback.style.left = event.offsetX + 'px';
+        feedback.style.top = event.offsetY + 'px';
+
+        // Добавляем элемент в контейнер
+        document.getElementById('img-container').appendChild(feedback);
+
+        // Удаляем элемент через 1 секунду после анимации
+        setTimeout(function() {
+            feedback.remove();
+        }, 1000);
+    });
+
+    function updateCounter() {
+        counter.textContent = clickCount;
+    }
+</script>
+
+</body>
+</html>
